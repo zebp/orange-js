@@ -1,0 +1,25 @@
+{
+  "name": "@orange-js/vite",
+  "type": "module",
+  "version": "0.1.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc -w",
+    "format": "biome format src/**/*.ts --write",
+    "check:lint": "biome lint src/**/*.ts src/**/*.tsx",
+    "check:format": "biome format src/**/*.ts"
+  },
+  "keywords": [],
+  "author": "zeb@zebulon.dev",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "vite": "=6.0.3"
+  }
+}
