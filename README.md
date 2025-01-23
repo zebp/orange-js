@@ -1,7 +1,7 @@
 <h1 align="center">orange-js</h1>
 
 <p align="center">
-    A fullstack framework for <a href="https://developers.cloudflare.com/durable-objects/">Cloudflare's developer platform</a> on top of React Router v7
+    A <b>HEAVILY WIP</b> fullstack framework for <a href="https://developers.cloudflare.com/durable-objects/">Cloudflare's developer platform</a> on top of React Router v7
 </p>
 
 <p align="center">
