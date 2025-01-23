@@ -50,7 +50,7 @@ type SerializeLoaderFrom<
   T extends RouteDurableObject<unknown>,
   Key extends keyof T = "loader",
 > = Syncify<
-  ReturnType<T[Key] extends (...args: any[]) => any ? T[Key] : never>
+  ReturnType<T[Key] extends (...args: unknown[]) => unknown ? T[Key] : never>
 >;
 
 export function useDurableObject<
@@ -59,6 +59,7 @@ export function useDurableObject<
   return useLoaderData() as SerializeLoaderFrom<Obj>;
 }
 
+/*
 export function loaderIn<
   Obj extends RouteDurableObject<unknown>,
   Key extends keyof Obj,
@@ -98,3 +99,4 @@ export function actionUsing<Obj extends RouteDurableObject<unknown>, Env, T>(
 ): () => T {
   throw new Error("This function should be removed by the Vite plugin");
 }
+*/

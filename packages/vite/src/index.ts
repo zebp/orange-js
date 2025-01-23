@@ -1,15 +1,15 @@
-import { Manifest, Plugin } from "vite";
+import type { Manifest, Plugin } from "vite";
 import * as fs from "node:fs/promises";
-import { loadRoutes, RouteManifest } from "./routes.js";
+import { cloudflare } from "@cloudflare/vite-plugin";
+import { loadRoutes, type RouteManifest } from "./routes.js";
 import {
   durableObjectRoutes,
   durableObjectsVirtualModule,
-} from "./durable-objects.js";
-import { workerStub } from "./worker-stub.js";
-import { builder } from "./build.js";
-import { serverBundle } from "./server-bundle.js";
-import { cloudflare } from "@cloudflare/vite-plugin";
-import { hmr } from "./hmr.js";
+} from "./plugins/durable-objects.js";
+import { workerStub } from "./plugins/worker-stub.js";
+import { clientBuilder, serverBuilder } from "./plugins/build.js";
+import { serverBundle } from "./plugins/server-bundle.js";
+import { hmr } from "./plugins/hmr.js";
 
 export type MiddlewareArgs = {
   request: Request;
@@ -32,24 +32,14 @@ export type Context = {
 const ctx: Context = { routes: undefined, clientManifest: undefined };
 
 export type PluginConfig = {
-  cloudflare?: any;
-}
+  cloudflare?: Parameters<typeof cloudflare>[0];
+};
 
-export default function ({ cloudflare: cloudflareCfg }: PluginConfig = {}): Plugin | Plugin[] {
-  const configFn = (opt?: Partial<Config>) => {
-    if (opt) {
-      config = { ...config, ...opt };
-    }
-    return config;
-  };
-  let config: Config = {
-    routes: {},
-    setRoutes: (routes: RouteManifest) => (config.routes = routes),
-    ssr: false,
-  };
-
+export default function ({
+  cloudflare: cloudflareCfg,
+}: PluginConfig = {}): Plugin | Plugin[] {
   return [
-    cloudflare(cloudflareCfg) as unknown as any,
+    cloudflare(cloudflareCfg) as unknown as Plugin,
     {
       name: "orange:route-plugin",
       enforce: "pre",
@@ -59,19 +49,15 @@ export default function ({ cloudflare: cloudflareCfg }: PluginConfig = {}): Plug
           .filter((it) => it.endsWith(".tsx"))
           .map((it) => `app/routes/${it}`);
 
-        const routes = loadRoutes(routeFiles);
-        config.setRoutes(routes);
-        ctx.routes = routes;
-      },
-      configResolved(userConfig) {
-        config.ssr = Boolean(userConfig.build.ssr);
+        ctx.routes = loadRoutes(routeFiles);
       },
     },
-    builder(configFn, ctx),
-    workerStub(configFn),
-    durableObjectRoutes(configFn),
-    durableObjectsVirtualModule(configFn),
-    serverBundle(configFn, ctx),
-    hmr(),
+    clientBuilder(ctx),
+    serverBuilder(),
+    workerStub(),
+    durableObjectRoutes(ctx),
+    durableObjectsVirtualModule(ctx),
+    serverBundle(ctx),
+    ...hmr(),
   ];
 }

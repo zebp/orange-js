@@ -1,5 +1,5 @@
 declare module "virtual:orange/routes" {
-  import { RouteObject } from "react-router";
+  import type { RouteObject } from "react-router";
 
   const routes: RouteObject[];
   export default routes;
@@ -10,7 +10,7 @@ declare module "virtual:orange/durable-objects" {}
 declare module "virtual:orange/client-manifest" {}
 
 declare module "virtual:orange/server-bundle" {
-  import { ServerBuild } from "react-router";
+  import type { ServerBuild } from "react-router";
 
   export const assets: ServerBuild["assets"];
   export const assetsBuildDirectory: ServerBuild["assetsBuildDirectory"];

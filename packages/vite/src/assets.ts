@@ -1,22 +1,22 @@
-import { Manifest } from "vite";
-import { Context } from "./index.js";
-import { RouteManifestEntry } from "./routes.js";
-import { mapObject, unreachable } from "./util.js";
+import type { Manifest } from "vite";
 import * as crypto from "node:crypto";
-import { virtualInjectHmrRuntime } from "./hmr.js";
+import type { Context } from "./index.js";
+import type { RouteManifestEntry } from "./routes.js";
+import { mapObject, unreachable } from "./util.js";
+import { virtualInjectHmrRuntime } from "./plugins/hmr.js";
 
 export function releaseAssets(ctx: Context) {
   const routes = ctx.routes ?? unreachable();
   const manifest = ctx.clientManifest ?? unreachable();
 
   const assetRoutes = mapObject(routes, (route) =>
-    mapManifestRoute(route, manifest)
+    mapManifestRoute(route, manifest),
   );
 
   const entryChunk =
     Object.values(manifest).find((it) => it.isEntry) ?? unreachable();
   const entry = {
-    module: prependSlash(entryChunk.file),
+    module: `/${entryChunk.file}`,
     imports: resolve(manifest, entryChunk.imports),
     css: resolve(manifest, entryChunk.css),
   };
@@ -49,13 +49,11 @@ function mapManifestRoute(route: RouteManifestEntry, manifest: Manifest) {
     hasClientLoader: route.hasClientLoader ?? false,
     hasClientAction: route.hasClientAction ?? false,
     hasErrorBoundary: route.hasErrorBoundary ?? false,
-    module: prependSlash(chunk.file),
+    module: `/${chunk.file}`,
     imports: resolve(manifest, chunk.imports),
     css: resolve(manifest, chunk.css),
   };
 }
-
-const prependSlash = (it: string) => "/" + it;
 
 function resolve(manifest: Manifest, items: string[] | undefined): string[] {
   const unresolved = items ?? [];
@@ -66,7 +64,7 @@ function resolve(manifest: Manifest, items: string[] | undefined): string[] {
       throw new Error(`Could not find chunk "${it}" in manifest`);
     }
 
-    return "/" + chunk.file;
+    return `/${chunk.file}`;
   });
 }
 
@@ -83,7 +81,7 @@ export function devAssets(ctx: Context) {
     hasClientLoader: route.hasClientLoader ?? false,
     hasClientAction: route.hasClientAction ?? false,
     hasErrorBoundary: route.hasErrorBoundary ?? false,
-    module: "/" + route.file,
+    module: `/${route.file}`,
     imports: [],
   }));
 

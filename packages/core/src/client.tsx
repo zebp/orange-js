@@ -10,7 +10,7 @@ export function hydrate() {
       document,
       <StrictMode>
         <HydratedRouter />
-      </StrictMode>
+      </StrictMode>,
     );
   });
 }

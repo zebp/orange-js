@@ -21,7 +21,7 @@ export function useWebsocket(callback: OnMessage) {
     return () => {
       webSocket.close();
     };
-  }, [setWebSocket]);
+  }, [route.id, location.pathname, callback]);
 
   return (message: string | ArrayBuffer | ArrayBufferLike) =>
     webSocket?.send(message);

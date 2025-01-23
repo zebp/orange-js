@@ -1,7 +1,7 @@
 import type { Plugin } from "vite";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { VirtualModule } from "./virtual-module.js";
+import { VirtualModule } from "../virtual-module.js";
 
 export const virtualInjectHmrRuntime = new VirtualModule("inject-hmr-runtime");
 const virtualHmrRuntime = new VirtualModule("hmr-runtime");

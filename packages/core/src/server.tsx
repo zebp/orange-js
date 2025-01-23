@@ -2,7 +2,7 @@ import { act } from "react";
 import {
   createRequestHandler,
   createStaticHandler,
-  RouteObject,
+  type RouteObject,
 } from "react-router";
 
 import * as serverBundle from "virtual:orange/server-bundle";

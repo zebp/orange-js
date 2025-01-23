@@ -7,7 +7,6 @@ function path(file: string): string {
     .replace("_index", "");
 }
 
-
 function loadRoute(file: string) {
   const contents = fs.readFileSync(file, "utf-8");
   return {
@@ -18,17 +17,14 @@ function loadRoute(file: string) {
     hasAction:
       contents.includes("export async function action") ||
       contents.includes("async action("),
-    hasClientLoader:
-      contents.includes("export async function clientLoader"),
-    hasClientAction:
-      contents.includes("export async function clientAction"),
+    hasClientLoader: contents.includes("export async function clientLoader"),
+    hasClientAction: contents.includes("export async function clientAction"),
     exportedClasses:
       contents
         .match(/export class (\w+)/g)
         ?.map((it) => it.replace("export class ", "")) ?? [],
   };
 }
-
 
 export interface RouteManifestEntry {
   /**
@@ -66,7 +62,12 @@ export interface RouteManifest {
 }
 
 export function loadRoutes(routes: string[]): RouteManifest {
-  const root: RouteManifestEntry = { id: "root", file: "app/root.tsx", path: "", ...loadRoute("app/root.tsx") };
+  const root: RouteManifestEntry = {
+    id: "root",
+    file: "app/root.tsx",
+    path: "",
+    ...loadRoute("app/root.tsx"),
+  };
   const manifest: RouteManifest = { root };
 
   for (const routeFile of routes) {

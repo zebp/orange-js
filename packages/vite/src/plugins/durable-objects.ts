@@ -1,13 +1,13 @@
-import { Plugin } from "vite";
+import type { Plugin } from "vite";
 import { resolve } from "node:path";
 
-import { ConfigFn } from "./index.js";
-import { VirtualModule } from "./virtual-module.js";
-import { unreachable } from "./util.js";
+import type { ConfigFn, Context } from "../index.js";
+import { VirtualModule } from "../virtual-module.js";
+import { unreachable } from "../util.js";
 
 const DO_VIRTUAL_MODULE_ID = new VirtualModule("durable-objects");
 
-export function durableObjectsVirtualModule(config: ConfigFn): Plugin {
+export function durableObjectsVirtualModule(ctx: Context): Plugin {
   return {
     name: "orange:durable-object-virtual-module",
     enforce: "pre",
@@ -18,7 +18,7 @@ export function durableObjectsVirtualModule(config: ConfigFn): Plugin {
     },
     load(id) {
       if (DO_VIRTUAL_MODULE_ID.is(id)) {
-        const { routes } = config();
+        const routes = ctx.routes ?? unreachable();
         let body = "";
 
         for (const route of Object.values(routes)) {
@@ -38,14 +38,15 @@ export function durableObjectsVirtualModule(config: ConfigFn): Plugin {
   };
 }
 
-export function durableObjectRoutes(config: ConfigFn): Plugin {
+export function durableObjectRoutes(ctx: Context): Plugin {
   return {
     name: "orange:durable-object-routes",
     enforce: "pre",
     async transform(code, id) {
-      const { routes } = config();
-
-      const routeFiles = Object.values(routes).map(route => resolve(route.file));
+      const routes = ctx.routes ?? unreachable();
+      const routeFiles = Object.values(routes).map((route) =>
+        resolve(route.file),
+      );
       if (!routeFiles.includes(id)) {
         return;
       }
