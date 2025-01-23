@@ -1,6 +1,6 @@
 {
   "name": "@orange-js/orange",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
   "keywords": [],
   "author": "zeb@zebulon.dev",
@@ -36,7 +36,7 @@
       "types": "./src/modules.d.ts"
     }
   },
-  "peerDependencies": {
+  "dependencies": {
     "react": ">=18",
     "react-dom": ">=18",
     "react-router": "^7.1.1"
