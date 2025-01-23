@@ -50,6 +50,25 @@ export default function ({
           .map((it) => `app/routes/${it}`);
 
         ctx.routes = loadRoutes(routeFiles);
+
+        return {
+          ...userConfig,
+          build: {
+            ...userConfig.build,
+            rollupOptions: {
+              ...userConfig.build?.rollupOptions,
+              external: ["cloudflare:workers"],
+            },
+          },
+          optimizeDeps: {
+            ...userConfig.optimizeDeps,
+            exclude: [
+              "cloudflare:workers",
+              "cloudflare:env",
+              ...(userConfig.optimizeDeps?.exclude ?? []),
+            ],
+          },
+        };
       },
     },
     clientBuilder(ctx),

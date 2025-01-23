@@ -15,10 +15,10 @@ importers:
   packages/core:
     dependencies:
       react:
-        specifier: '>=18'
+        specifier: '>=19'
         version: 19.0.0
       react-dom:
-        specifier: '>=18'
+        specifier: '>=19'
         version: 19.0.0(react@19.0.0)
       react-router:
         specifier: ^7.1.1

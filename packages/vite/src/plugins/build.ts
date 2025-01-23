@@ -27,12 +27,14 @@ export function clientBuilder(ctx: Context): Plugin {
         build: {
           manifest: true,
           outDir: "dist/client",
+          target: "es2022",
           rollupOptions: {
             input: [
               "app/entry.client.ts",
               ...Object.values(routes).map((r) => r.file),
             ],
             preserveEntrySignatures: "exports-only",
+            external: ["cloudflare:workers"],
           },
         },
         optimizeDeps: {
@@ -77,6 +79,7 @@ export function serverBuilder(): Plugin {
           emitAssets: true,
           outDir: `dist/${name}`,
           write: true,
+          target: "es2022",
           rollupOptions: {
             input: "app/entry.server.ts",
             external: ["cloudflare:workers"],
@@ -91,7 +94,7 @@ export function serverBuilder(): Plugin {
             "react/jsx-runtime",
             "react/jsx-dev-runtime",
             "react-dom",
-            "react-dom/client",
+            "react-dom/server.edge",
 
             // Pre-bundle router dependencies to avoid router duplicates.
             // Mismatching routers cause `Error: You must render this element inside a <Remix> element`.
@@ -100,7 +103,12 @@ export function serverBuilder(): Plugin {
           ],
         },
         resolve: {
-          dedupe: ["react", "react-dom", "react-router"],
+          dedupe: [
+            "react",
+            "react-dom",
+            "react-router",
+            "react-dom/server.edge",
+          ],
         },
       };
     },

@@ -1,14 +1,21 @@
-import { act } from "react";
 import {
   createRequestHandler,
   createStaticHandler,
+  type ServerBuild,
   type RouteObject,
 } from "react-router";
 
-import * as serverBundle from "virtual:orange/server-bundle";
-
-export function orangeApplication() {
-  const handler = createRequestHandler(serverBundle);
+export function app(serverBuild: ServerBuild) {
+  const handler = createRequestHandler(serverBuild);
+  const routeObjects: RouteObject[] = Object.values(serverBuild.routes)
+    .filter((it) => it !== undefined)
+    .map((route) => ({
+      id: route.id,
+      path: route.path,
+      index: route.index,
+      loader: route.module.loader,
+      caseSensitive: route.caseSensitive,
+    }));
 
   // This is a big ol' hack, but I think it's okay
   const { queryRoute } = createStaticHandler(routeObjects);
@@ -24,13 +31,3 @@ export function orangeApplication() {
     },
   };
 }
-
-const routeObjects: RouteObject[] = Object.values(serverBundle.routes)
-  .filter((it) => it !== undefined)
-  .map((route) => ({
-    id: route.id,
-    path: route.path,
-    index: route.index,
-    loader: route.module.loader,
-    caseSensitive: route.caseSensitive,
-  }));
