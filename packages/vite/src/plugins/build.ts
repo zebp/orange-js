@@ -1,12 +1,12 @@
 import { assert, unreachable } from "../util.js";
-import type { ConfigFn, Context } from "../index.js";
+import type { Context } from "../index.js";
 import type { Manifest, Plugin } from "vite";
 
 export function clientBuilder(ctx: Context): Plugin {
   return {
     name: "orange:client-builder",
     enforce: "pre",
-    writeBundle(opts, bundle) {
+    writeBundle(_, bundle) {
       const manifestChunk = bundle[".vite/manifest.json"];
       assert("source" in manifestChunk, "missing manifest chunk");
       const clientManifest: Manifest = JSON.parse(
@@ -34,7 +34,6 @@ export function clientBuilder(ctx: Context): Plugin {
               ...Object.values(routes).map((r) => r.file),
             ],
             preserveEntrySignatures: "exports-only",
-            external: ["cloudflare:workers"],
           },
         },
         optimizeDeps: {

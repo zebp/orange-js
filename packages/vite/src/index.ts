@@ -43,13 +43,17 @@ export default function ({
     {
       name: "orange:route-plugin",
       enforce: "pre",
-      async config(userConfig) {
+      async config(userConfig, env) {
         const routeEntries = await fs.readdir("app/routes");
         const routeFiles = routeEntries
           .filter((it) => it.endsWith(".tsx"))
           .map((it) => `app/routes/${it}`);
 
         ctx.routes = loadRoutes(routeFiles);
+
+        if (env.mode === "production") {
+          return;
+        }
 
         return {
           ...userConfig,
