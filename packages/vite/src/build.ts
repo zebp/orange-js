@@ -1,7 +1,6 @@
 import { unreachable } from "./util.js";
 import { ConfigFn, Context } from "./index.js";
 import { Manifest, Plugin } from "vite";
-import { writeAssets } from "./assets.js";
 
 export function builder(config: ConfigFn, ctx: Context): Plugin {
   return {
@@ -11,10 +10,16 @@ export function builder(config: ConfigFn, ctx: Context): Plugin {
         ...userConfig,
         environments: {
           client: {
+            esbuild: {
+              jsx: "automatic",
+            },
             build: {
               outDir: "dist/client",
               rollupOptions: {
-                input: ["app/entry.client.tsx", ...Object.values(config().routes).map(r => r.file)],
+                input: [
+                  "app/entry.client.ts",
+                  ...Object.values(config().routes).map((r) => r.file),
+                ],
                 preserveEntrySignatures: "exports-only",
               },
             },
@@ -40,13 +45,16 @@ export function builder(config: ConfigFn, ctx: Context): Plugin {
             },
           },
           server: {
+            esbuild: {
+              jsx: "automatic",
+            },
             build: {
               ssr: true,
               emitAssets: true,
               outDir: "dist/server",
               write: true,
               rollupOptions: {
-                input: "app/entry.server.tsx",
+                input: "app/entry.server.ts",
                 external: ["cloudflare:workers"],
               },
             },
@@ -75,6 +83,12 @@ export function builder(config: ConfigFn, ctx: Context): Plugin {
         build: {
           manifest: true,
         },
+        server: {
+          fs: {
+            allow: [".."],
+            strict: false
+          }
+        },
         builder: {
           async buildApp(builder) {
             const { client, server } = builder.environments;
@@ -85,12 +99,14 @@ export function builder(config: ConfigFn, ctx: Context): Plugin {
               ? [clientDone]
               : unreachable();
 
-            const clientManifest: Manifest = JSON.parse(
-              (outputs
+            const manifestChunk =
+              outputs
                 .flatMap((o) => o.output)
                 .filter((o) => o.type === "asset")
-                .find((o) => o.fileName === ".vite/manifest.json")
-                ?.source as string) ?? unreachable()
+                .find((o) => o.fileName === ".vite/manifest.json") ??
+              unreachable();
+            const clientManifest: Manifest = JSON.parse(
+              (manifestChunk?.source as string) ?? unreachable()
             );
 
             const out = outputs.flatMap((o) => o.output);
@@ -99,8 +115,6 @@ export function builder(config: ConfigFn, ctx: Context): Plugin {
               unreachable();
 
             ctx.clientManifest = clientManifest;
-
-            writeAssets("dist/client/manifest.js", ctx);
 
             server.config.define = {
               ...server.config.define,

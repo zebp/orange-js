@@ -9,6 +9,7 @@ import { workerStub } from "./worker-stub.js";
 import { builder } from "./build.js";
 import { serverBundle } from "./server-bundle.js";
 import { cloudflare } from "@cloudflare/vite-plugin";
+import { hmr } from "./hmr.js";
 
 export type MiddlewareArgs = {
   request: Request;
@@ -48,10 +49,11 @@ export default function ({ cloudflare: cloudflareCfg }: PluginConfig = {}): Plug
   };
 
   return [
+    cloudflare(cloudflareCfg) as unknown as any,
     {
       name: "orange:route-plugin",
       enforce: "pre",
-      async config() {
+      async config(userConfig) {
         const routeEntries = await fs.readdir("app/routes");
         const routeFiles = routeEntries
           .filter((it) => it.endsWith(".tsx"))
@@ -70,6 +72,6 @@ export default function ({ cloudflare: cloudflareCfg }: PluginConfig = {}): Plug
     durableObjectRoutes(configFn),
     durableObjectsVirtualModule(configFn),
     serverBundle(configFn, ctx),
-    // cloudflare(cloudflareCfg) as unknown as any,
+    hmr(),
   ];
 }

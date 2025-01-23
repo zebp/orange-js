@@ -1,19 +1,11 @@
-import { Manifest, ManifestChunk } from "vite";
+import { Manifest } from "vite";
 import { Context } from "./index.js";
 import { RouteManifestEntry } from "./routes.js";
 import { mapObject, unreachable } from "./util.js";
-import * as fs from "node:fs";
-import * as path from "node:path";
 import * as crypto from "node:crypto";
+import { virtualInjectHmrRuntime } from "./hmr.js";
 
-export function writeAssets(path: string, ctx: Context) {
-  fs.writeFileSync(
-    path,
-    `window.__reactRouterManifest = ${JSON.stringify(assets(ctx), null, 2)}`
-  );
-}
-
-export function assets(ctx: Context) {
+export function releaseAssets(ctx: Context) {
   const routes = ctx.routes ?? unreachable();
   const manifest = ctx.clientManifest ?? unreachable();
 
@@ -76,4 +68,35 @@ function resolve(manifest: Manifest, items: string[] | undefined): string[] {
 
     return "/" + chunk.file;
   });
+}
+
+export function devAssets(ctx: Context) {
+  const routes = ctx.routes ?? unreachable();
+  const assetRoutes = mapObject(routes, (route) => ({
+    id: route.id,
+    parentId: route.parentId,
+    path: route.path,
+    index: route.index ?? false,
+    caseSensitive: true,
+    hasLoader: route.hasLoader ?? false,
+    hasAction: route.hasAction ?? false,
+    hasClientLoader: route.hasClientLoader ?? false,
+    hasClientAction: route.hasClientAction ?? false,
+    hasErrorBoundary: route.hasErrorBoundary ?? false,
+    module: "/" + route.file,
+    imports: [],
+  }));
+
+  return {
+    entry: {
+      module: "/app/entry.client.ts",
+      imports: [],
+    },
+    hmr: {
+      runtime: virtualInjectHmrRuntime.url,
+    },
+    routes: assetRoutes,
+    url: "/assets/manifest.js",
+    version: "dev",
+  };
 }

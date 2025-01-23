@@ -16,4 +16,12 @@ export class VirtualModule {
   get id() {
     return `\0${this.#id}`;
   }
+
+  get raw() {
+    return this.#id;
+  }
+
+  get url() {
+    return `/@id/__x00__${this.#id}`;
+  }
 }

@@ -4,7 +4,7 @@ import { VirtualModule } from "./virtual-module.js";
 import { mapObject, unreachable } from "./util.js";
 import dedent from "dedent";
 import { RouteManifest, RouteManifestEntry } from "./routes.js";
-import { assets } from "./assets.js";
+import { devAssets, releaseAssets } from "./assets.js";
 
 const routesVirtualId = new VirtualModule("server-bundle");
 
@@ -42,6 +42,8 @@ export function serverBundle(config: ConfigFn, ctx: Context): Plugin {
         }`
       );
 
+      const assets = ctx.clientManifest ? releaseAssets(ctx) : devAssets(ctx);
+
       return dedent`
       import * as serverModule from "@orange-js/orange/server-entry";
 
@@ -53,7 +55,7 @@ export function serverBundle(config: ConfigFn, ctx: Context): Plugin {
       export const publicPath = "/";
       export const isSpaMode = false;
       export const assetsBuildDirectory = "dist/client";
-      export const assets = ${JSON.stringify(assets(ctx), null, 2)};
+      export const assets = ${JSON.stringify(assets)};
       export const routes = {${routeLiterals.join(",")}};
       `;
     },
