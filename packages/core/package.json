@@ -1,6 +1,6 @@
 {
   "name": "@orange-js/orange",
-  "version": "0.1.0",
+  "version": "0.0.2",
   "description": "",
   "keywords": [],
   "author": "zeb@zebulon.dev",
@@ -46,5 +46,9 @@
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
     "typescript": "^5.7.2"
-  }
+  },
+  "files": [
+    "dist",
+    "LICENSE"
+  ]
 }
