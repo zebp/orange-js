@@ -1,7 +1,6 @@
 {
   "name": "create-orange",
-  "type": "module",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
   "bin": "./dist/index.js",
   "main": "dist/index.js",
