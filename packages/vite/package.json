@@ -20,7 +20,7 @@
     "typescript": "^5.7.2"
   },
   "dependencies": {
-    "@cloudflare/vite-plugin": "^0.0.2",
+    "@cloudflare/vite-plugin": "^0.0.6",
     "@react-router/fs-routes": "^7.1.5",
     "dedent": "^1.5.3",
     "react-refresh": "^0.16.0",
