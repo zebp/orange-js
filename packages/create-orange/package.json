@@ -1,8 +1,9 @@
 {
   "name": "create-orange",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
+  "bin": "./dist/index.js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -12,6 +13,9 @@
     "check:lint": "biome lint src/**/*.ts src/**/*.tsx",
     "check:format": "biome format src/**/*.ts"
   },
+  "exports": {
+		".": "./dist/index.js"
+	},
   "keywords": [],
   "author": "zeb@zebulon.dev",
   "license": "MIT",
