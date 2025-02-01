@@ -1,6 +1,6 @@
 {
   "name": "create-orange",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "",
   "bin": "./dist/index.js",
   "main": "dist/index.js",
@@ -24,14 +24,14 @@
     "@types/node": "^22.10.7",
     "@types/which-pm-runs": "^1.0.2",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.2",
-    "which-pm-runs": "^1.1.0"
+    "typescript": "^5.7.2"
   },
   "files": [
     "dist",
     "LICENSE"
   ],
   "dependencies": {
+    "which-pm-runs": "^1.1.0",
     "@inquirer/core": "^10.1.5",
     "@inquirer/prompts": "^7.2.4",
     "command-exists": "^1.2.9",
