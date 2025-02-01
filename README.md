@@ -5,13 +5,13 @@
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/diffable-objects">
-    <img src="https://img.shields.io/npm/v/diffable-objects?style=for-the-badge" alt="downloads" height="24">
+  <a href="https://www.npmjs.com/package/@orange-js/orange">
+    <img src="https://img.shields.io/npm/v/@orange-js/orange?style=for-the-badge" alt="downloads" height="24">
   </a>
-  <a href="https://github.com/zebp/diffable-objects/actions">
-    <img src="https://img.shields.io/github/actions/workflow/status/zebp/diffable-objects/ci.yaml?branch=main&style=for-the-badge" alt="npm version" height="24">
+  <a href="https://github.com/zebp/@orange-js/orange/actions">
+    <img src="https://img.shields.io/github/actions/workflow/status/zebp/@orange-js/orange/ci.yaml?branch=main&style=for-the-badge" alt="npm version" height="24">
   </a>
-  <a href="https://github.com/zebp/diffable-objects">
+  <a href="https://github.com/zebp/@orange-js/orange">
     <img src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge" alt="MIT license" height="24">
   </a>
 </p>
@@ -20,13 +20,13 @@
 
 ```
 # NPM
-$ npm create orange-app
+$ npm create orange
 # Yarn
-$ yarn create orange-app
+$ yarn create orange
 # PNPM
-$ pnpm create orange-app
+$ pnpm create orange
 # Bun
-$ bun create orange-app
+$ bun create orange
 ```
 
 ## License
