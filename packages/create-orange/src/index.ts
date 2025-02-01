@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import commandExists from "command-exists";
 import whichPm from "which-pm-runs";
 import { input, confirm } from "@inquirer/prompts";
