@@ -10,6 +10,7 @@ import { workerStub } from "./plugins/worker-stub.js";
 import { clientBuilder, serverBuilder } from "./plugins/build.js";
 import { serverBundle } from "./plugins/server-bundle.js";
 import { hmr } from "./plugins/hmr.js";
+import { flatRoutes } from "@react-router/fs-routes";
 
 export type MiddlewareArgs = {
   request: Request;
@@ -44,12 +45,9 @@ export default function ({
       name: "orange:route-plugin",
       enforce: "pre",
       async config(userConfig, env) {
-        const routeEntries = await fs.readdir("app/routes");
-        const routeFiles = routeEntries
-          .filter((it) => it.endsWith(".tsx"))
-          .map((it) => `app/routes/${it}`);
-
-        ctx.routes = loadRoutes(routeFiles);
+        globalThis.__reactRouterAppDirectory = "app"
+        const routes = await flatRoutes();
+        ctx.routes = loadRoutes(routes);
 
         if (env.mode === "production") {
           return;

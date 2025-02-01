@@ -1,11 +1,6 @@
 import fs from "node:fs";
-
-function path(file: string): string {
-  return file
-    .replace("app/routes/", "")
-    .replace(".tsx", "")
-    .replace("_index", "");
-}
+import { flatRoutes } from "@react-router/fs-routes";
+import { unreachable } from "./util.js";
 
 function loadRoute(file: string) {
   const contents = fs.readFileSync(file, "utf-8");
@@ -61,7 +56,9 @@ export interface RouteManifest {
   [routeId: string]: RouteManifestEntry;
 }
 
-export function loadRoutes(routes: string[]): RouteManifest {
+type RouteConfigEntry = Awaited<ReturnType<typeof flatRoutes>>[number];
+
+export function loadRoutes(routes: RouteConfigEntry[]): RouteManifest {
   const root: RouteManifestEntry = {
     id: "root",
     file: "app/root.tsx",
@@ -70,19 +67,23 @@ export function loadRoutes(routes: string[]): RouteManifest {
   };
   const manifest: RouteManifest = { root };
 
-  for (const routeFile of routes) {
-    const id = routeFile.replace(/\.tsx$/, "").replace(/^app\/routes\//, "");
-    const entry: RouteManifestEntry = {
-      id,
-      parentId: "root",
-      file: routeFile,
-      path: path(routeFile) || undefined,
-      index: routeFile.includes("_index"),
-      ...loadRoute(routeFile),
+  const recurse = (route: RouteConfigEntry, parentId?: string) => {
+    if (route.id === undefined) unreachable();
+
+    manifest[route.id] = {
+      id: route.id,
+      parentId,
+      ...route,
+      file: `app/${route.file}`,
+      ...loadRoute(`app/${route.file}`),
     };
 
-    manifest[id] = entry;
+    if (route.children) {
+      route.children.forEach((child) => recurse(child, route.id));
+    }
   }
+
+  routes.forEach((route) => recurse(route, "root"));
 
   return manifest;
 }

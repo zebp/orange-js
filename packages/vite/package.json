@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@cloudflare/vite-plugin": "^0.0.2",
+    "@react-router/fs-routes": "^7.1.5",
     "dedent": "^1.5.3",
     "react-refresh": "^0.16.0",
     "vite": "^6.0.11"
