@@ -11,6 +11,7 @@ import {
   exportNamedDeclaration,
   classDeclaration,
   classBody,
+  isFunctionDeclaration,
 } from "@babel/types";
 import _generate from "@babel/generator";
 const traverse = _traverse.default;
@@ -92,6 +93,13 @@ export function removeDataStubs(ctx: Context): Plugin {
                   )
                 )
               );
+            }
+          } else if (isFunctionDeclaration(node.declaration)) {
+            const { id } = node.declaration;
+
+            if (id && isIdentifier(id) && namesToStrip.includes(id.name)) {
+              stripped = true;
+              path.remove();
             }
           }
         },

@@ -81,7 +81,7 @@ export function serverBuilder(): Plugin {
           target: "es2022",
           rollupOptions: {
             input: "app/entry.server.ts",
-            external: ["cloudflare:workers"],
+            external: ["cloudflare:workers", "node:async_hooks"],
           },
         },
         optimizeDeps: {

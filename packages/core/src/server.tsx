@@ -5,6 +5,9 @@ import {
   type RouteObject,
 } from "react-router";
 
+// @ts-ignore
+import { _env } from "./internal.js";
+
 export function app(serverBuild: ServerBuild) {
   const handler = createRequestHandler(serverBuild);
   const routeObjects: RouteObject[] = Object.values(serverBuild.routes)
@@ -22,12 +25,14 @@ export function app(serverBuild: ServerBuild) {
 
   return {
     async fetch(request: Request, env: unknown) {
-      const requestContext = { cloudflare: { env } };
-      if (request.headers.get("upgrade") === "websocket") {
-        return await queryRoute(request, { requestContext });
-      }
-
-      return await handler(request, requestContext);
+      return await _env.run(env, async () => {
+        const requestContext = { cloudflare: { env } };
+        if (request.headers.get("upgrade") === "websocket") {
+          return await queryRoute(request, { requestContext });
+        }
+        
+        return await handler(request, requestContext);
+      })
     },
   };
 }

@@ -20,6 +20,7 @@ export function workerStub(): Plugin {
         return `
           export class DurableObject {};
           export class RpcStub {};
+          export class WorkflowEntrypoint {};
         `;
       }
     },

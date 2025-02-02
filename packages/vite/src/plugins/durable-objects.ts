@@ -1,42 +1,9 @@
 import type { Plugin } from "vite";
 import { resolve } from "node:path";
 
-import type { ConfigFn, Context } from "../index.js";
-import { VirtualModule } from "../virtual-module.js";
+import type { Context } from "../index.js";
 import { unreachable } from "../util.js";
 
-const DO_VIRTUAL_MODULE_ID = new VirtualModule("durable-objects");
-
-export function durableObjectsVirtualModule(ctx: Context): Plugin {
-  return {
-    name: "orange:durable-object-virtual-module",
-    enforce: "pre",
-    resolveId(id) {
-      if (DO_VIRTUAL_MODULE_ID.is(id)) {
-        return id;
-      }
-    },
-    load(id) {
-      if (DO_VIRTUAL_MODULE_ID.is(id)) {
-        const routes = ctx.routes ?? unreachable();
-        let body = "";
-
-        for (const route of Object.values(routes)) {
-          const exportedClasses = route.exportedClasses ?? [];
-          if (exportedClasses.length === 0) {
-            continue;
-          }
-
-          body += `export { ${exportedClasses.join(", ")} } from "/${
-            route.file
-          }";\n`;
-        }
-
-        return body;
-      }
-    },
-  };
-}
 
 export function durableObjectRoutes(ctx: Context): Plugin {
   return {

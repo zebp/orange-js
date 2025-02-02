@@ -5,28 +5,42 @@
 import { Plugin } from "vite";
 import { Context } from "../index.js";
 
-export function isolation(ctx: Context): Plugin[] {
+export function isolation(): Plugin[] {
   const clientRegex = /.+.client(?:.(?:j|t)sx?)?$/g;
   const serverRegex = /.+.server(?:.(?:j|t)sx?)?$/g;
 
   return [
     {
+      // Prevent client-only modules from being imported in the server bundle
       name: "orange:client-isolation",
+      enforce: "pre",
+      applyToEnvironment(environment) {
+        return environment.name !== "client";
+      },
       resolveId(source, importer) {
-        // Only apply this plugin if the client manifest is available, (ie. we're building the server bundle)
-        if (ctx.clientManifest !== undefined && clientRegex.test(source)) {
-          throw new Error(
+        // TODO: this crashes the dev server
+        if (importer?.endsWith(".html")) return;
+
+        if (clientRegex.test(source)) {
+          this.error(
             `${source} was imported in the server bundle, but is a client-only module. Importer: ${importer}`,
           );
         }
       },
     },
     {
+      // Prevent server-only modules from being imported in the client bundle
       name: "orange:server-isolation",
+      enforce: "pre",
+      applyToEnvironment(environment) {
+        return environment.name === "client";
+      },
       resolveId(source, importer) {
-        // Only apply this plugin if the client manifest isn't available, (ie. we're building the client bundle)
-        if (ctx.clientManifest === undefined && serverRegex.test(source)) {
-          throw new Error(
+        // TODO: this crashes the dev server
+        if (importer?.endsWith(".html")) return;
+
+        if (serverRegex.test(source)) {
+          this.error(
             `${source} was imported in the client bundle, but is a server-only module. Importer: ${importer}`,
           );
         }

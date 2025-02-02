@@ -4,7 +4,6 @@ import { cloudflare } from "@cloudflare/vite-plugin";
 import { loadRoutes, type RouteManifest } from "./routes.js";
 import {
   durableObjectRoutes,
-  durableObjectsVirtualModule,
 } from "./plugins/durable-objects.js";
 import { workerStub } from "./plugins/worker-stub.js";
 import { clientBuilder, serverBuilder } from "./plugins/build.js";
@@ -13,19 +12,13 @@ import { hmr } from "./plugins/hmr.js";
 import { flatRoutes } from "@react-router/fs-routes";
 import { isolation } from "./plugins/isolation.js";
 import { removeDataStubs } from "./plugins/remove-data-stubs.js";
+import { entrypoints } from "./plugins/entrypoints.js";
+import { internal } from "./plugins/internal.js";
 
 export type MiddlewareArgs = {
   request: Request;
   next: () => Promise<Response>;
 };
-
-export type Config = {
-  routes: RouteManifest;
-  setRoutes: (routes: RouteManifest) => void;
-  ssr: boolean;
-};
-
-export type ConfigFn = (opt?: Partial<Config>) => Config;
 
 export type Context = {
   routes: RouteManifest | undefined;
@@ -79,10 +72,11 @@ export default function ({
     serverBuilder(),
     workerStub(),
     durableObjectRoutes(ctx),
-    durableObjectsVirtualModule(ctx),
+    entrypoints(ctx),
     serverBundle(ctx),
     removeDataStubs(ctx),
-    ...isolation(ctx),
+    ...internal(),
+    ...isolation(),
     ...hmr(),
   ];
 }
