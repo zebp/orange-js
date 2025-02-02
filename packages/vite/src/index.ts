@@ -12,6 +12,7 @@ import { serverBundle } from "./plugins/server-bundle.js";
 import { hmr } from "./plugins/hmr.js";
 import { flatRoutes } from "@react-router/fs-routes";
 import { isolation } from "./plugins/isolation.js";
+import { removeDataStubs } from "./plugins/remove-data-stubs.js";
 
 export type MiddlewareArgs = {
   request: Request;
@@ -39,7 +40,7 @@ export type PluginConfig = {
 
 export default function ({
   cloudflare: cloudflareCfg,
-}: PluginConfig = {}): Plugin | Plugin[] {
+}: PluginConfig = {}): Plugin[] {
   return [
     cloudflare(cloudflareCfg) as unknown as Plugin,
     {
@@ -80,6 +81,7 @@ export default function ({
     durableObjectRoutes(ctx),
     durableObjectsVirtualModule(ctx),
     serverBundle(ctx),
+    removeDataStubs(ctx),
     ...isolation(ctx),
     ...hmr(),
   ];
