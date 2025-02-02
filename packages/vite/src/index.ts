@@ -11,6 +11,7 @@ import { clientBuilder, serverBuilder } from "./plugins/build.js";
 import { serverBundle } from "./plugins/server-bundle.js";
 import { hmr } from "./plugins/hmr.js";
 import { flatRoutes } from "@react-router/fs-routes";
+import { isolation } from "./plugins/isolation.js";
 
 export type MiddlewareArgs = {
   request: Request;
@@ -79,6 +80,7 @@ export default function ({
     durableObjectRoutes(ctx),
     durableObjectsVirtualModule(ctx),
     serverBundle(ctx),
+    ...isolation(ctx),
     ...hmr(),
   ];
 }
