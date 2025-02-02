@@ -1,11 +1,4 @@
-declare module "virtual:orange/routes" {
-  import type { RouteObject } from "react-router";
-
-  const routes: RouteObject[];
-  export default routes;
-}
-
-declare module "virtual:orange/durable-objects" {}
+declare module "virtual:orange/entrypoints" {}
 
 declare module "virtual:orange/client-manifest" {}
 

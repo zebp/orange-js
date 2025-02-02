@@ -1,6 +1,6 @@
 {
   "name": "@orange-js/orange",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "",
   "keywords": [],
   "author": "zeb@zebulon.dev",
@@ -34,6 +34,10 @@
     },
     "./modules": {
       "types": "./src/modules.d.ts"
+    },
+    "./workflows": {
+      "import": "./dist/workflows.js",
+      "types": "./dist/workflows.d.ts"
     }
   },
   "peerDependencies": {
@@ -43,6 +47,7 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20241230.0",
+    "@types/node": "^22.13.0",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
     "typescript": "^5.7.2"

@@ -1,9 +1,8 @@
-import { Manifest, type Plugin } from "vite";
-import type { ConfigFn, Context } from "../index.js";
+import { type Plugin } from "vite";
+import type { Context } from "../index.js";
 import { VirtualModule } from "../virtual-module.js";
-import { mapObject, unreachable } from "../util.js";
+import { unreachable } from "../util.js";
 import dedent from "dedent";
-import { RouteManifest, RouteManifestEntry } from "../routes.js";
 import { devAssets, releaseAssets } from "../assets.js";
 
 const routesVirtualId = new VirtualModule("server-bundle");
