@@ -76,6 +76,18 @@ importers:
 
   packages/vite:
     dependencies:
+      '@babel/generator':
+        specifier: ^7.26.5
+        version: 7.26.5
+      '@babel/parser':
+        specifier: ^7.26.7
+        version: 7.26.7
+      '@babel/traverse':
+        specifier: ^7.26.7
+        version: 7.26.7
+      '@babel/types':
+        specifier: ^7.26.7
+        version: 7.26.7
       '@cloudflare/vite-plugin':
         specifier: ^0.0.6
         version: 0.0.6(vite@6.0.11(@types/node@22.10.7)(tsx@4.19.2))(wrangler@3.103.2(@cloudflare/workers-types@4.20250121.0))
@@ -92,6 +104,12 @@ importers:
         specifier: ^6.0.11
         version: 6.0.11(@types/node@22.10.7)(tsx@4.19.2)
     devDependencies:
+      '@types/babel__generator':
+        specifier: ^7.6.8
+        version: 7.6.8
+      '@types/babel__traverse':
+        specifier: ^7.20.6
+        version: 7.20.6
       '@types/node':
         specifier: ^22.10.5
         version: 22.10.7
@@ -1081,6 +1099,12 @@ packages:
     resolution: {integrity: sha512-ul8rnCsUumNln5YWwz0ted2ZHFhzhRRnkpBZ+YRuHoRAlUji9KChpOUOndY7uykrPEPXVbHLlsdo6v5yXo/TXw==}
     cpu: [x64]
     os: [win32]
+
+  '@types/babel__generator@7.6.8':
+    resolution: {integrity: sha512-ASsj+tpEDsEiFr1arWrlN6V3mdfjRMZt6LtK/Vp/kreFLnr5QH5+DhvD5nINYZXzwJvXeGq+05iUXcAzVrqWtw==}
+
+  '@types/babel__traverse@7.20.6':
+    resolution: {integrity: sha512-r1bzfrm0tomOI8g1SzvCaQHo6Lcv6zu0EA+W2kHrt8dyrHQxGzBBL4kdkzIS+jBMV+EYcMAEAqXqYaLJq5rOZg==}
 
   '@types/command-exists@1.2.3':
     resolution: {integrity: sha512-PpbaE2XWLaWYboXD6k70TcXO/OdOyyRFq5TVpmlUELNxdkkmXU9fkImNosmXU1DtsNrqdUgWd/nJQYXgwmtdXQ==}
@@ -2777,6 +2801,14 @@ snapshots:
 
   '@rollup/rollup-win32-x64-msvc@4.31.0':
     optional: true
+
+  '@types/babel__generator@7.6.8':
+    dependencies:
+      '@babel/types': 7.26.7
+
+  '@types/babel__traverse@7.20.6':
+    dependencies:
+      '@babel/types': 7.26.7
 
   '@types/command-exists@1.2.3': {}
 
