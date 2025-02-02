@@ -12,7 +12,6 @@ export function isolation(ctx: Context): Plugin[] {
   return [
     {
       name: "orange:client-isolation",
-      enforce: "pre",
       resolveId(source, importer) {
         // Only apply this plugin if the client manifest is available, (ie. we're building the server bundle)
         if (ctx.clientManifest !== undefined && clientRegex.test(source)) {
@@ -24,7 +23,6 @@ export function isolation(ctx: Context): Plugin[] {
     },
     {
       name: "orange:server-isolation",
-      enforce: "pre",
       resolveId(source, importer) {
         // Only apply this plugin if the client manifest isn't available, (ie. we're building the client bundle)
         if (ctx.clientManifest === undefined && serverRegex.test(source)) {
