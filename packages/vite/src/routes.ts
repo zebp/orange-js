@@ -8,10 +8,12 @@ function loadRoute(file: string) {
     hasLoader:
       contents.includes("export async function loader") ||
       contents.includes("async loader()") ||
-      contents.includes("async webSocketConnect("),
+      contents.includes("async webSocketConnect(") ||
+      contents.includes("export const loader = "),
     hasAction:
       contents.includes("export async function action") ||
-      contents.includes("async action("),
+      contents.includes("async action(") ||
+      contents.includes("export const action = "),
     hasClientLoader: contents.includes("export async function clientLoader"),
     hasClientAction: contents.includes("export async function clientAction"),
     exportedClasses:
@@ -81,7 +83,7 @@ export function loadRoutes(routes: RouteConfigEntry[]): RouteManifest {
     if (route.children) {
       route.children.forEach((child) => recurse(child, route.id));
     }
-  }
+  };
 
   routes.forEach((route) => recurse(route, "root"));
 

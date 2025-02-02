@@ -45,7 +45,7 @@ export default function ({
       name: "orange:route-plugin",
       enforce: "pre",
       async config(userConfig, env) {
-        globalThis.__reactRouterAppDirectory = "app"
+        globalThis.__reactRouterAppDirectory = "app";
         const routes = await flatRoutes();
         ctx.routes = loadRoutes(routes);
 

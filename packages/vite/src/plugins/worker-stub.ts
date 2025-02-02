@@ -17,7 +17,10 @@ export function workerStub(): Plugin {
     },
     load(id) {
       if (workersVmod.is(id)) {
-        return "export class DurableObject {};";
+        return `
+          export class DurableObject {};
+          export class RpcStub {};
+        `;
       }
     },
   };

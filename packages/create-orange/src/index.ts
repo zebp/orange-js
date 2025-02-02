@@ -26,7 +26,7 @@ async function main() {
       bin: "git",
       args: ["clone", "https://github.com/zebp/orange-template.git", name],
     },
-    { clearPromptOnDone: true }
+    { clearPromptOnDone: true },
   );
 
   const replacements = {
@@ -50,7 +50,7 @@ async function main() {
         args: ["install"],
         cwd: name,
       },
-      { clearPromptOnDone: true }
+      { clearPromptOnDone: true },
     );
   }
 
@@ -64,7 +64,7 @@ async function main() {
         args: ["init"],
         cwd: name,
       },
-      { clearPromptOnDone: true }
+      { clearPromptOnDone: true },
     );
 
     execSync("git add .", { cwd: name });
@@ -76,7 +76,7 @@ async function main() {
         args: ["commit", "-m", "Initial commit"],
         cwd: name,
       },
-      { clearPromptOnDone: true }
+      { clearPromptOnDone: true },
     );
   }
 

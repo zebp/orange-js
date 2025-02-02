@@ -26,3 +26,4 @@ export function useWebsocket(callback: OnMessage) {
   return (message: string | ArrayBuffer | ArrayBufferLike) =>
     webSocket?.send(message);
 }
+``;

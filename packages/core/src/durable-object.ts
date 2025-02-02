@@ -1,5 +1,6 @@
-import { DurableObject } from "cloudflare:workers";
+import { DurableObject, RpcStub } from "cloudflare:workers";
 import { useLoaderData, type LoaderFunctionArgs } from "react-router";
+import { getAllMethods } from "./util.js";
 
 export type IdentifierFunctionArgs = LoaderFunctionArgs;
 
@@ -12,6 +13,10 @@ export type DurableActionFunctionArgs = {
 };
 
 export class RouteDurableObject<Env> extends DurableObject<Env> {
+  constructor(ctx: DurableObjectState, env: Env) {
+    super(ctx, env);
+  }
+
   override async fetch(request: Request): Promise<Response> {
     if (
       this.webSocketConnect &&
@@ -24,14 +29,6 @@ export class RouteDurableObject<Env> extends DurableObject<Env> {
       return resp;
     }
 
-    if (request.method === "GET" && this.loader) {
-      const data = await this.loader({ request });
-      return Response.json(data);
-    }
-    if (this.action) {
-      const data = await this.action({ request });
-      return Response.json(data);
-    }
     return Response.json({ error: "Method not allowed" }, { status: 405 });
   }
 
@@ -59,7 +56,60 @@ export function useDurableObject<
   return useLoaderData() as SerializeLoaderFrom<Obj>;
 }
 
-/*
+function innerDataIn<
+  Obj extends RouteDurableObject<unknown>,
+  Key extends keyof Obj,
+  Env,
+>(
+  durableObject: new (ctx: DurableObjectState, env: Env) => Obj,
+  method: Key,
+  nameGetter:
+    | string
+    | ((args: IdentifierFunctionArgs) => Promise<string> | string),
+): (args: IdentifierFunctionArgs) => Promise<SerializeLoaderFrom<Obj, Key>> {
+  return async (args): Promise<SerializeLoaderFrom<Obj, Key>> => {
+    const namespace = args.context.cloudflare.env[
+      durableObject.name
+    ] as DurableObjectNamespace;
+    const name =
+      typeof nameGetter === "function"
+        ? await nameGetter({
+            ...args,
+            // @ts-ignore
+            request: args.request?.clone(),
+          })
+        : nameGetter;
+
+    if (name === undefined) {
+      throw new Error(
+        "DurableObject did not have a static name function specified",
+      );
+    }
+
+    const doID = namespace.idFromName(name);
+    const stub = namespace.get(doID);
+
+    const ret = await (stub as any)[method]({
+      ...args,
+      context: undefined,
+    });
+
+    if (ret instanceof Response) {
+      // @ts-ignore
+      return ret;
+    }
+
+    if (ret instanceof RpcStub) {
+      throw new Error(
+        "`RpcStub`s cannot be used as loader or action data, wrap your return data in the `data` function to avoid this error.",
+      );
+    }
+
+    // @ts-ignore
+    return ret as SerializeLoaderFrom<Obj, Key>;
+  };
+}
+
 export function loaderIn<
   Obj extends RouteDurableObject<unknown>,
   Key extends keyof Obj,
@@ -67,17 +117,11 @@ export function loaderIn<
 >(
   durableObject: new (ctx: DurableObjectState, env: Env) => Obj,
   method: Key,
-): () => SerializeLoaderFrom<Obj, Key> {
-  throw new Error("This function should be removed by the Vite plugin");
-}
-
-export function loaderUsing<Obj extends RouteDurableObject<unknown>, Env, T>(
-  object: new (ctx: DurableObjectState, env: Env) => Obj,
-  p: {
-    loader: (this: Obj, args: DurableLoaderFunctionArgs) => T | Promise<T>;
-  },
-): () => T {
-  throw new Error("This function should be removed by the Vite plugin");
+  nameGetter:
+    | string
+    | ((args: IdentifierFunctionArgs) => Promise<string> | string),
+): (args: IdentifierFunctionArgs) => Promise<SerializeLoaderFrom<Obj, Key>> {
+  return innerDataIn(durableObject, method, nameGetter);
 }
 
 export function actionIn<
@@ -87,16 +131,18 @@ export function actionIn<
 >(
   durableObject: new (ctx: DurableObjectState, env: Env) => Obj,
   method: Key,
-): () => SerializeLoaderFrom<Obj, Key> {
-  throw new Error("This function should be removed by the Vite plugin");
+  nameGetter:
+    | string
+    | ((args: IdentifierFunctionArgs) => Promise<string> | string),
+): (args: IdentifierFunctionArgs) => Promise<SerializeLoaderFrom<Obj, Key>> {
+  return innerDataIn(durableObject, method, nameGetter);
 }
 
-export function actionUsing<Obj extends RouteDurableObject<unknown>, Env, T>(
-  object: new (ctx: DurableObjectState, env: Env) => Obj,
-  p: {
-    action: (this: Obj, args: DurableActionFunctionArgs) => T | Promise<T>;
-  },
-): () => T {
-  throw new Error("This function should be removed by the Vite plugin");
+/**
+ * Clones the input object to remove `RpcStub` instances, this prevents
+ * rendering issues when used in a route component since `RpcStub`s can't
+ * be rendered.
+ */
+export function data<T>(data: T): T {
+  return JSON.parse(JSON.stringify(data));
 }
-*/
