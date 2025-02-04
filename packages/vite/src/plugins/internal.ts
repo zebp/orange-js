@@ -6,7 +6,7 @@ const EMPTY = new VirtualModule("empty");
 
 const emptyExports = (exports: string[]) => {
   return exports.map((e) => `export const ${e} = undefined;`).join("\n");
-}
+};
 
 export function internal(): Plugin[] {
   return [

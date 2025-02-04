@@ -42,7 +42,7 @@ export class RouteDurableObject<Env> extends DurableObject<Env> {
   webSocketConnect?(
     client: WebSocket,
     server: WebSocket,
-    request: Request
+    request: Request,
   ): Promise<Response>;
 }
 
@@ -50,13 +50,13 @@ type Syncify<T> = T extends Promise<infer U> ? U : T;
 
 type SerializeLoaderFrom<
   T extends RouteDurableObject<unknown>,
-  Key extends keyof T = "loader"
+  Key extends keyof T = "loader",
 > = Syncify<
   ReturnType<T[Key] extends (...args: unknown[]) => unknown ? T[Key] : never>
 >;
 
 export function useDurableObject<
-  Obj extends RouteDurableObject<unknown>
+  Obj extends RouteDurableObject<unknown>,
 >(): SerializeLoaderFrom<Obj> {
   return useLoaderData() as SerializeLoaderFrom<Obj>;
 }
@@ -64,13 +64,13 @@ export function useDurableObject<
 function innerDataIn<
   Obj extends RouteDurableObject<unknown>,
   Key extends keyof Obj,
-  Env
+  Env,
 >(
   durableObject: new (ctx: DurableObjectState, env: Env) => Obj,
   method: Key,
   nameGetter:
     | string
-    | ((args: IdentifierFunctionArgs) => Promise<string> | string)
+    | ((args: IdentifierFunctionArgs) => Promise<string> | string),
 ): (args: IdentifierFunctionArgs) => Promise<SerializeLoaderFrom<Obj, Key>> {
   return async (args): Promise<SerializeLoaderFrom<Obj, Key>> => {
     // @ts-ignore
@@ -88,7 +88,7 @@ function innerDataIn<
 
     if (name === undefined) {
       throw new Error(
-        "DurableObject did not have a static name function specified"
+        "DurableObject did not have a static name function specified",
       );
     }
 
@@ -107,7 +107,7 @@ function innerDataIn<
 
     if (ret instanceof RpcStub) {
       throw new Error(
-        "`RpcStub`s cannot be used as loader or action data, wrap your return data in the `data` function to avoid this error."
+        "`RpcStub`s cannot be used as loader or action data, wrap your return data in the `data` function to avoid this error.",
       );
     }
 
@@ -119,13 +119,13 @@ function innerDataIn<
 export function loaderIn<
   Obj extends RouteDurableObject<unknown>,
   Key extends keyof Obj,
-  Env
+  Env,
 >(
   durableObject: new (ctx: DurableObjectState, env: Env) => Obj,
   method: Key,
   nameGetter:
     | string
-    | ((args: IdentifierFunctionArgs) => Promise<string> | string)
+    | ((args: IdentifierFunctionArgs) => Promise<string> | string),
 ): (args: IdentifierFunctionArgs) => Promise<SerializeLoaderFrom<Obj, Key>> {
   return innerDataIn(durableObject, method, nameGetter);
 }
@@ -133,13 +133,13 @@ export function loaderIn<
 export function actionIn<
   Obj extends RouteDurableObject<unknown>,
   Key extends keyof Obj,
-  Env
+  Env,
 >(
   durableObject: new (ctx: DurableObjectState, env: Env) => Obj,
   method: Key,
   nameGetter:
     | string
-    | ((args: IdentifierFunctionArgs) => Promise<string> | string)
+    | ((args: IdentifierFunctionArgs) => Promise<string> | string),
 ): (args: IdentifierFunctionArgs) => Promise<SerializeLoaderFrom<Obj, Key>> {
   return innerDataIn(durableObject, method, nameGetter);
 }

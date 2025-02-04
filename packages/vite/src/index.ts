@@ -1,10 +1,7 @@
 import type { Manifest, Plugin } from "vite";
-import * as fs from "node:fs/promises";
 import { cloudflare } from "@cloudflare/vite-plugin";
 import { loadRoutes, type RouteManifest } from "./routes.js";
-import {
-  durableObjectRoutes,
-} from "./plugins/durable-objects.js";
+import { durableObjectRoutes } from "./plugins/durable-objects.js";
 import { workerStub } from "./plugins/worker-stub.js";
 import { clientBuilder, serverBuilder } from "./plugins/build.js";
 import { serverBundle } from "./plugins/server-bundle.js";
@@ -14,6 +11,7 @@ import { isolation } from "./plugins/isolation.js";
 import { removeDataStubs } from "./plugins/remove-data-stubs.js";
 import { entrypoints } from "./plugins/entrypoints.js";
 import { internal } from "./plugins/internal.js";
+import { routeReload } from "./plugins/route-reload.js";
 
 export type MiddlewareArgs = {
   request: Request;
@@ -75,6 +73,7 @@ export default function ({
     entrypoints(ctx),
     serverBundle(ctx),
     removeDataStubs(ctx),
+    routeReload(),
     ...internal(),
     ...isolation(),
     ...hmr(),

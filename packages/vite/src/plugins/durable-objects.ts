@@ -4,7 +4,6 @@ import { resolve } from "node:path";
 import type { Context } from "../index.js";
 import { unreachable } from "../util.js";
 
-
 export function durableObjectRoutes(ctx: Context): Plugin {
   return {
     name: "orange:durable-object-routes",

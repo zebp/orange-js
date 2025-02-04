@@ -30,9 +30,9 @@ export function app(serverBuild: ServerBuild) {
         if (request.headers.get("upgrade") === "websocket") {
           return await queryRoute(request, { requestContext });
         }
-        
+
         return await handler(request, requestContext);
-      })
+      });
     },
   };
 }

@@ -89,9 +89,9 @@ export function removeDataStubs(ctx: Context): Plugin {
                     node.declaration.id,
                     null,
                     classBody([]),
-                    null
-                  )
-                )
+                    null,
+                  ),
+                ),
               );
             }
           } else if (isFunctionDeclaration(node.declaration)) {

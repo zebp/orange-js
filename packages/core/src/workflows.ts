@@ -6,7 +6,7 @@ import { env } from "./internal.js";
 
 export async function start<
   Wrkflow extends WorkflowEntrypoint<CloudflareEnv, Params>,
-  Params extends {}
+  Params extends {},
 >(
   workflow: new (ctx: ExecutionContext, env: CloudflareEnv) => Wrkflow,
   id: string,
@@ -14,14 +14,14 @@ export async function start<
 ): Promise<WorkflowInstance>;
 export async function start<
   Wrkflow extends WorkflowEntrypoint<CloudflareEnv, Params>,
-  Params extends {}
+  Params extends {},
 >(
   workflow: new (ctx: ExecutionContext, env: CloudflareEnv) => Wrkflow,
   params: Params,
-): Promise<WorkflowInstance> 
+): Promise<WorkflowInstance>;
 export async function start<
   Wrkflow extends WorkflowEntrypoint<CloudflareEnv, Params>,
-  Params extends {}
+  Params extends {},
 >(
   workflow: new (ctx: ExecutionContext, env: CloudflareEnv) => Wrkflow,
   idOrParams: string | Params,
@@ -43,10 +43,10 @@ export async function start<
 }
 
 export async function get<
-  Wrkflow extends WorkflowEntrypoint<CloudflareEnv, unknown>
+  Wrkflow extends WorkflowEntrypoint<CloudflareEnv, unknown>,
 >(
   workflow: new (ctx: ExecutionContext, env: CloudflareEnv) => Wrkflow,
-  id: string
+  id: string,
 ): Promise<WorkflowInstance> {
   const workflowClassName = workflow.name;
   const e = env() as { [key: string]: Workflow<unknown> };
