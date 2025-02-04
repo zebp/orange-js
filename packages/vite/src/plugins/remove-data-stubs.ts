@@ -25,6 +25,7 @@ const baseClassesToStrip = [
   "DurableObject",
 ];
 const allNamesToStrip = [...namesToStrip, ...baseClassesToStrip];
+const extensionsToParse = [".js", ".jsx", ".ts", ".tsx"];
 
 export function removeDataStubs(ctx: Context): Plugin {
   return {
@@ -32,13 +33,14 @@ export function removeDataStubs(ctx: Context): Plugin {
     applyToEnvironment(environment) {
       return environment.name === "client";
     },
-    async transform(code, id, options) {
+    async transform(code, id) {
       const routes = ctx.routes ?? unreachable();
       const isRouteModule = Object.values(routes)
         .map((route) => path.resolve(route.file))
         .some((path) => path === id);
 
-      if (!isRouteModule) return;
+      const hasExtension = extensionsToParse.some((ext) => id.endsWith(ext));
+      if (!isRouteModule || !hasExtension) return;
 
       // Optimization: if the code doesn't contain any of the names we're looking for, skip parsing
       if (!allNamesToStrip.some((name) => code.includes(name))) {
