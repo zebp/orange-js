@@ -6,7 +6,7 @@ import { mapObject, unreachable } from "./util.js";
 import { virtualInjectHmrRuntime } from "./plugins/hmr.js";
 
 export function releaseAssets(ctx: Context) {
-  const routes = ctx.routes ?? unreachable();
+  const routes = ctx.componentRoutes ?? unreachable();
   const manifest = ctx.clientManifest ?? unreachable();
 
   const assetRoutes = mapObject(routes, (route) =>
@@ -69,7 +69,7 @@ function resolve(manifest: Manifest, items: string[] | undefined): string[] {
 }
 
 export function devAssets(ctx: Context) {
-  const routes = ctx.routes ?? unreachable();
+  const routes = ctx.componentRoutes ?? unreachable();
   const assetRoutes = mapObject(routes, (route) => ({
     id: route.id,
     parentId: route.parentId,

@@ -21,7 +21,7 @@ export function clientBuilder(ctx: Context): Plugin {
     configEnvironment(name, envConfig) {
       if (name !== "client") return envConfig;
 
-      const routes = ctx.routes ?? unreachable();
+      const routes = ctx.componentRoutes ?? unreachable();
       return {
         ...envConfig,
         build: {

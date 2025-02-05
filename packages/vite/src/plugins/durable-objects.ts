@@ -11,7 +11,7 @@ export function durableObjectRoutes(ctx: Context): Plugin {
     async transform(code, id) {
       if (ctx.clientManifest === undefined) return;
 
-      const routes = ctx.routes ?? unreachable();
+      const routes = ctx.componentRoutes ?? unreachable();
       const routeFiles = Object.values(routes).map((route) =>
         resolve(route.file),
       );

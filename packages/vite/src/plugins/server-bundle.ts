@@ -25,20 +25,29 @@ export function serverBundle(ctx: Context): Plugin {
         return;
       }
 
-      const routes = ctx.routes ?? unreachable();
-      const routeImports = Object.values(routes).map(
+      const componentRoutes = ctx.componentRoutes ?? unreachable();
+      const componentRouteImports = Object.values(componentRoutes).map(
         (route, index) =>
-          `import * as routeModule${index} from "/${route.file}";`,
+          `import * as componentRouteModule${index} from "/${route.file}";`,
       );
-      const routeLiterals = Object.values(routes).map(
+      const componentRouteLiterals = Object.values(componentRoutes).map(
         (route, index) => `"${route.id}": {
           id: ${JSON.stringify(route.id)},
           parentId: ${JSON.stringify(route.parentId)},
           path: ${JSON.stringify(route.path)},
           index: ${JSON.stringify(route.index)},
           caseSensitive: true,
-          module: routeModule${index},
+          module: componentRouteModule${index},
         }`,
+      );
+
+      const apiRoutes = ctx.apiRoutes ?? unreachable();
+      const apiRouteImports = apiRoutes.map(
+        (route, index) =>
+          `import * as apiRouteModule${index} from "/${route.file}";`,
+      );
+      const apiRouteLiterals = Object.values(apiRoutes).map(
+        (route, index) => `"${route.path.replaceAll("$", ":")}": apiRouteModule${index}`,
       );
 
       const assets = ctx.clientManifest ? releaseAssets(ctx) : devAssets(ctx);
@@ -46,7 +55,8 @@ export function serverBundle(ctx: Context): Plugin {
       return dedent`
       import * as serverModule from "@orange-js/orange/server-entry";
 
-      ${routeImports.join("\n")}
+      ${componentRouteImports.join("\n")}
+      ${apiRouteImports.join("\n")}
 
       export const entry = { module: serverModule };
       export const future = { unstable_optimizeDeps: false };
@@ -55,7 +65,9 @@ export function serverBundle(ctx: Context): Plugin {
       export const isSpaMode = false;
       export const assetsBuildDirectory = "dist/client";
       export const assets = ${JSON.stringify(assets, null, 2)};
-      export const routes = {${routeLiterals.join(",")}};
+      export const routes = {${componentRouteLiterals.join(",")}};
+
+      export const apiRoutes = {${apiRouteLiterals.join(",")}};
       `;
     },
   };

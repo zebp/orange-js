@@ -1,6 +1,6 @@
 {
   "name": "@orange-js/orange",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "",
   "keywords": [],
   "author": "zeb@zebulon.dev",
@@ -56,5 +56,8 @@
     "dist",
     "src/modules.d.ts",
     "LICENSE"
-  ]
+  ],
+  "dependencies": {
+    "hono": "^4.6.20"
+  }
 }

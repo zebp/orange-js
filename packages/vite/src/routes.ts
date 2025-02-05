@@ -60,7 +60,17 @@ export interface RouteManifest {
 
 type RouteConfigEntry = Awaited<ReturnType<typeof flatRoutes>>[number];
 
-export function loadRoutes(routes: RouteConfigEntry[]): RouteManifest {
+export type ApiRoute = {
+  file: string;
+  path: string;
+};
+
+type LoadedRoutes = {
+  manifest: RouteManifest;
+  apiRoutes: ApiRoute[];
+};
+
+export function loadRoutes(routes: RouteConfigEntry[]): LoadedRoutes {
   const root: RouteManifestEntry = {
     id: "root",
     file: "app/root.tsx",
@@ -85,7 +95,33 @@ export function loadRoutes(routes: RouteConfigEntry[]): RouteManifest {
     }
   };
 
-  routes.forEach((route) => recurse(route, "root"));
+  const topLevelApiRoutes = routes.filter(
+    (it) => it.path === "api" || it.path?.startsWith("api/")
+  );
+  const apiRoutes = topLevelApiRoutes.flatMap(collectApiRoutes);
 
-  return manifest;
+  routes
+    .filter((it) => topLevelApiRoutes.every((api) => it.file !== api.file))
+    .forEach((route) => recurse(route, "root"));
+
+  return { manifest, apiRoutes };
+}
+
+function collectApiRoutes(route: RouteConfigEntry): ApiRoute[] {
+  const results: ApiRoute[] = [];
+
+  if (route.path) {
+    results.push({
+      file: `app/${route.file}`,
+      path: route.path,
+    });
+  }
+
+  if (route.children) {
+    route.children.forEach((child) => {
+      results.push(...collectApiRoutes(child));
+    });
+  }
+
+  return results;
 }
