@@ -1,6 +1,6 @@
 import type { Manifest, Plugin } from "vite";
 import { cloudflare } from "@cloudflare/vite-plugin";
-import { loadRoutes, type RouteManifest } from "./routes.js";
+import { ApiRoute, loadRoutes, type RouteManifest } from "./routes.js";
 import { durableObjectRoutes } from "./plugins/durable-objects.js";
 import { workerStub } from "./plugins/worker-stub.js";
 import { clientBuilder, serverBuilder } from "./plugins/build.js";
@@ -19,11 +19,12 @@ export type MiddlewareArgs = {
 };
 
 export type Context = {
-  routes: RouteManifest | undefined;
+  componentRoutes: RouteManifest | undefined;
+  apiRoutes: ApiRoute[] | undefined;
   clientManifest: Manifest | undefined;
 };
 
-const ctx: Context = { routes: undefined, clientManifest: undefined };
+const ctx: Context = { componentRoutes: undefined, apiRoutes: [], clientManifest: undefined };
 
 export type PluginConfig = {
   cloudflare?: Parameters<typeof cloudflare>[0];
@@ -40,7 +41,9 @@ export default function ({
       async config(userConfig, env) {
         globalThis.__reactRouterAppDirectory = "app";
         const routes = await flatRoutes();
-        ctx.routes = loadRoutes(routes);
+        const { manifest, apiRoutes } = loadRoutes(routes);
+        ctx.componentRoutes = manifest;
+        ctx.apiRoutes = apiRoutes;
 
         if (env.mode === "production") {
           return;

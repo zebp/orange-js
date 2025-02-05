@@ -13,4 +13,16 @@ declare module "virtual:orange/server-bundle" {
   export const isSpaMode: ServerBuild["isSpaMode"];
   export const publicPath: ServerBuild["publicPath"];
   export const routes: ServerBuild["routes"];
+  export const apiRoutes: Record<
+    string,
+    {
+      default: {
+        fetch: (
+          request: Request,
+          env: unknown,
+          ctx: ExecutionContext
+        ) => Promise<Response>;
+      };
+    }
+  >;
 }

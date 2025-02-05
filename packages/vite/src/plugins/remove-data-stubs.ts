@@ -34,7 +34,7 @@ export function removeDataStubs(ctx: Context): Plugin {
       return environment.name === "client";
     },
     async transform(code, id) {
-      const routes = ctx.routes ?? unreachable();
+      const routes = ctx.componentRoutes ?? unreachable();
       const isRouteModule = Object.values(routes)
         .map((route) => path.resolve(route.file))
         .some((path) => path === id);

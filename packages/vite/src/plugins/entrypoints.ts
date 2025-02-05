@@ -16,7 +16,7 @@ export function entrypoints(ctx: Context): Plugin {
     },
     load(id) {
       if (ENTRYPOINTS_VIRTUAL_MODULE.is(id)) {
-        const routes = ctx.routes ?? unreachable();
+        const routes = ctx.componentRoutes ?? unreachable();
         let body = "";
 
         for (const route of Object.values(routes)) {
