@@ -74,7 +74,11 @@ export function app(serverBuild: ServerBuild) {
       // @ts-ignore
       app.route(`/${path}`, handler);
     } else {
-      app.mount(`/${path}`, module.default.fetch);
+      app.mount(`/${path}`, module.default.fetch, {
+        // By default Hono rewrites the path for mounted handlers, but we want to keep the
+        // route as-is for API handlers.
+        replaceRequest: (req) => req,
+      });
     }
   }
 
