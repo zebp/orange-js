@@ -3,6 +3,7 @@ import { Plugin } from "vite";
 import { VirtualModule } from "../virtual-module.js";
 
 const EMPTY = new VirtualModule("empty");
+const INTERNAL = new VirtualModule("internal");
 
 const emptyExports = (exports: string[]) => {
   return exports.map((e) => `export const ${e} = undefined;`).join("\n");
@@ -24,6 +25,23 @@ export function internal(): Plugin[] {
       load(id) {
         if (EMPTY.is(id)) {
           return emptyExports(["start", "get"]);
+        }
+      },
+    },
+    {
+      name: "orange:shimmed-internal",
+      enforce: "pre",
+      applyToEnvironment(environment) {
+        return environment.name === "client";
+      },
+      resolveId(id) {
+        if (id === "./internal.js") {
+          return INTERNAL.id;
+        }
+      },
+      load(id) {
+        if (INTERNAL.is(id)) {
+          return emptyExports(["env"]);
         }
       },
     },
