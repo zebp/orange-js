@@ -40,6 +40,7 @@ function isProbablyHono(obj: object) {
 }
 
 export function app(serverBuild: ServerBuild) {
+  wrapLoadersAndActions(serverBuild);
   const handler = createRequestHandler(serverBuild);
   const routeObjects: RouteObject[] = Object.values(serverBuild.routes)
     .filter((it) => it !== undefined)
@@ -81,4 +82,27 @@ export function app(serverBuild: ServerBuild) {
   app.mount("/", fetch);
 
   return app;
+}
+
+function wrapLoadersAndActions(build: ServerBuild) {
+  for (const route of Object.values(build.routes)) {
+    if (route === undefined) {
+      continue;
+    }
+
+    const module = { ...route.module };
+    const { loader, action } = module;
+
+    if (loader) {
+      // @ts-ignore
+      module.loader = (opts: object) => loader({ ...opts, env: _env.getStore() });
+    }
+
+    if (action) {
+      // @ts-ignore
+      module.action = (opts: object) => action({ ...opts, env: _env.getStore() });
+    }
+
+    route.module = module;
+  }
 }
