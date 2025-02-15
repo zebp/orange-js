@@ -28,7 +28,7 @@ export class VirtualModule {
   static findPrefix(prefix: string, id: string) {
     const namespacedPrefix = `\0virtual:orange/${prefix}`;
     if (id.startsWith(namespacedPrefix)) {
-      return id.slice(namespacedPrefix.length);
+      return id.slice(namespacedPrefix.length - 1);
     }
   }
 }

@@ -103,6 +103,9 @@ importers:
       dedent:
         specifier: ^1.5.3
         version: 1.5.3
+      es-module-lexer:
+        specifier: ^1.6.0
+        version: 1.6.0
       react-refresh:
         specifier: ^0.16.0
         version: 0.16.0

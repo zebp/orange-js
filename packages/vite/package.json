@@ -30,6 +30,7 @@
     "@cloudflare/vite-plugin": "^0.0.6",
     "@react-router/fs-routes": "^7.1.5",
     "dedent": "^1.5.3",
+    "es-module-lexer": "^1.6.0",
     "react-refresh": "^0.16.0"
   },
   "files": [

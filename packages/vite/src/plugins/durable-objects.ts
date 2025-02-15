@@ -8,9 +8,10 @@ export function durableObjectRoutes(ctx: Context): Plugin {
   return {
     name: "orange:durable-object-routes",
     enforce: "pre",
+    applyToEnvironment(environment) {
+      return environment.name !== "client";
+    },
     async transform(code, id) {
-      if (ctx.clientManifest === undefined) return;
-
       const routes = ctx.componentRoutes ?? unreachable();
       const routeFiles = Object.values(routes).map((route) =>
         resolve(route.file),
@@ -44,6 +45,7 @@ export function durableObjectRoutes(ctx: Context): Plugin {
         }
 
         delete args.context;
+        delete args.env;
 
         return await (stub as any).loader(args);
       }
@@ -67,6 +69,7 @@ export function durableObjectRoutes(ctx: Context): Plugin {
         }
 
         delete args.context;
+        delete args.env;
 
         return await (stub as any).action(args);
       }`;

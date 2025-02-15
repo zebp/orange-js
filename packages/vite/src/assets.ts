@@ -61,7 +61,8 @@ function resolve(manifest: Manifest, items: string[] | undefined): string[] {
   return unresolved.map((it) => {
     const chunk = manifest[it];
     if (!chunk) {
-      throw new Error(`Could not find chunk "${it}" in manifest`);
+      // throw new Error(`Could not find chunk "${it}" in manifest`);
+      return `/${it}`;
     }
 
     return `/${chunk.file}`;
