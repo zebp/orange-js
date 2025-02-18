@@ -41,7 +41,14 @@ export function durableObjectRoutes(ctx: Context): Plugin {
         const stub = namespace.get(doID);
 
         if (args.request.headers.get("Upgrade") === "websocket") {
-          return await stub.fetch(args.request);
+          const modifiedRequest = new Request(args.request, {
+            headers: new Headers({
+              ...Object.fromEntries(args.request.headers),
+              "x-orange-params": JSON.stringify(args.params),
+            })
+          });
+
+          return await stub.fetch(modifiedRequest);
         }
 
         delete args.context;
@@ -65,7 +72,14 @@ export function durableObjectRoutes(ctx: Context): Plugin {
         const stub = namespace.get(doID);
 
         if (args.request.headers.get("Upgrade") === "websocket") {
-          return await stub.fetch(args.request);
+          const modifiedRequest = new Request(args.request, {
+            headers: new Headers({
+              ...Object.fromEntries(args.request.headers),
+              "x-orange-params": JSON.stringify(args.params),
+            })
+          });
+
+          return await stub.fetch(modifiedRequest);
         }
 
         delete args.context;
